@@ -1,70 +1,78 @@
-# gitopssettings README
+# GitOpsSettings
 
-This is the README for your extension "gitopssettings". After writing up a brief description, we recommend including the following sections.
+Manage your settings and Visual Studio Code configuration in GitOps style!
+
+> This is a very fresh (initial) release. I have put a great deal of effort into making sure that it will not destroy your Visual Studio Code installation. Nevertheless, to be doubly sure, please backup your settings before enabling this extension and playing with it. They can be found in `%APPDATA%\Code\User` (Windows), `~/.config/Code/User` (Linux) and `~/Library/Application Support/Code/User` (Mac).
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+It automatically synchronizes your entire Visual Studio Code configuration. That includes:
 
-For example if there is an image subfolder under your extension project workspace:
+- Settings
+- Keyboard shortcuts
+- User snippets
+- User tasks
+- Extensions
 
-\!\[feature X\]\(images/feature-x.png\)
+And uses Git repository as the single source of truth.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+### Why create this extension when Visual Studio Code has built in functionally for synchronizing configuration
+
+Yes is does, and **if built in synchronization is good enough for you, you should probably use it**. However it requires Github (or Microsoft account). Moreover it requires signing in into this account (and thus providing credentials) on every machine. If any of the two is a problem or a deal breaker, GitOpsSettings is for you!
+
+Of course this extension requires credential to access your Git server however it do not places any requirements on the Git hosting provider. Credentials for Git repositories usually allow only pull and push operations (nobody can delete anything) and they can often be limited to single repo or restrict access as read only.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+You need to have Git. Not really surprising... Besides that no other requirements.
+
+Of course you need to also have Git repository (both locally and hosted on some remote server) to synchronize your data.
+
+## Setting up synchronization
+
+Since this extension can also synchronizes settings, the location of directory congaing repository is kept, by GitOpsSettings, separately. You can configure it by invoking `Set storage directory` command.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+To configure GitOpsSettings the following settings are available:
 
-For example:
+- **GitOpsSettings > Base > SilentGitFailures**: When git operation fails during automatic checking for available updates, do not report anything. Note, that this option do not affect commands called explicitly by user. _(Default: on)_
+- **GitOpsSettings > Base > SingleUpdatesCheck**: Perform check for available updates only once, at startup (otherwise perform updates checks periodically). Note, that when enabled, check attempts will still be periodically performed until the first fully successful updates availability check. A reload is required for this option change to take effect. _(Default: on)_
+- **GitOpsSettings > Base > UpdatesCheckInterval**: Time interval between successive updates availability checks (in minutes). _(Default: 10)_
+- **GitOpsSettings > Synchronize > Settings**: Enable settings synchronization. _(Default: on)_
+- **GitOpsSettings > Synchronize > KeyboardShortcuts**: Enable user keyboard shortcuts synchronization. _(Default: on)_
+- **GitOpsSettings > Synchronize > UserSnippets**: Enable user snippets synchronization. _(Default: on)_
+- **GitOpsSettings > Synchronize > UserTasks**: Enable user tasks synchronization. _(Default: on)_
+- **GitOpsSettings > Synchronize > Extensions**: Enable extensions synchronization. This option causes installation of missing extensions, uninstallation of non listed extension and management of enabled/disabled states. _(Default: on)_
+- **GitOpsSettings > Synchronize > UiState**: Enable UI state synchronization. _(Default: on)_
 
-This extension contributes the following settings:
+## Exporting configuration
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+To export current Visual Studio Code configuration invoke `Export current configuration` command and pick directory to store your configuration in. By default it will open directory set as storage directory.
 
-## Known Issues
+## Commands
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- **Import configuration without performing pull operation** [`gitopssettings.importDataWithoutPull`]: Imports configuration from storage directory. It also prompts for confirmation on problems (like dirty working tree or upstream ahead) instead of failing.
+- **Import configuration** [`gitopssettings.importData`]: Performs Git fast forward pull and imports configuration from storage directory.
+- **Check for available updates** [`gitopssettings.checkForUpdates`]: Performs Git fetch operation and checks repository for available updates on current branch in relation to upstream.
+- **Export current configuration** [`gitopssettings.exportCurrentData`]: Opens directory selection dialog to select export location. By default opens on path set as storage directory.
+- **Set storage directory** [`gitopssettings.setStorageDirectory`]: Opens directory selection dialog to configure internally kept path to storage directory.
+- **Open storage directory** [`gitopssettings.openStorageDirectory`]: Opens a system file browser on directory set as storage.
 
-## Release Notes
+## Known issues and limitations
 
-Users appreciate release notes as you update your extension.
+- It does not synchronizes enabled/disabled states for extensions. Support for this is coming soon!
+- This extension does not (by itself) perform any (almost) modifications to Git repository. All it does is call `git fetch` and `git pull` with fast forward only option. This is both good and bad - good since extension has minimal footprint and you can structure and manage repository how you want, bad because you do not have one simple command to commit and push your changes of the configuration.
+- It does not synchronizes version of installed extensions.
+- GitOpsSettings do not synchronizes any workspace specific configurations or UI state.
+- Currently, this extension does not support customization of configuration for different environments. You can achieve this manually by creating multiple storage directories in your repository and by copping files between them.
 
-### 1.0.0
+## Related projects
 
-Initial release of ...
+If you like or need this extension you may also like [chezmoi](https://www.chezmoi.io/). If not for the fact that extensions are not a simple file, dotfile managers, like chezmoi, could replace this extension.
 
-### 1.0.1
+## Release notes
 
-Fixed issue #.
+### 0.0.1
 
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Initial release.

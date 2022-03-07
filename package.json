@@ -3,6 +3,11 @@
 	"displayName": "GitOpsSettings",
 	"description": "Manage your settings in GitOps style!",
 	"version": "0.0.1",
+	"license": "Apache-2.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/daishe/vscode-gitopssettings.git"
+	},
 	"engines": {
 		"vscode": "^1.65.0"
 	},
@@ -10,14 +15,94 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:gitopssettings.helloWorld"
+		"onStartupFinished",
+		"onCommand:gitopssettings.importDataWithoutPull",
+		"onCommand:gitopssettings.importData",
+		"onCommand:gitopssettings.checkForUpdates",
+		"onCommand:gitopssettings.exportCurrentData",
+		"onCommand:gitopssettings.setStorageDirectory",
+		"onCommand:gitopssettings.openStorageDirectory"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
+		"configuration": [
+			{
+				"id": "gitopssettings.configuration",
+				"title": "GitOpsSettings",
+				"properties": {
+					"gitopssettings.base.silentGitFailures": {
+						"type": "boolean",
+						"default": true,
+						"description": "When git operation fails during automatic checking for available updates, do not report anything. Note, that this option do not affect commands called explicitly by user."
+					},
+					"gitopssettings.base.singleUpdatesCheck": {
+						"type": "boolean",
+						"default": true,
+						"description": "Perform check for available updates only once, at startup (otherwise perform updates checks periodically). Note, that when enabled, check attempts will still be periodically performed until the first fully successful updates availability check. A reload is required for this option change to take effect."
+					},
+					"gitopssettings.base.updatesCheckInterval": {
+						"type": "integer",
+						"default": 10,
+						"description": "Time interval between successive updates availability checks (in minutes)."
+					},
+					"gitopssettings.synchronize.settings": {
+						"type": "boolean",
+						"default": true,
+						"description": "Enable settings synchronization."
+					},
+					"gitopssettings.synchronize.keyboardShortcuts": {
+						"type": "boolean",
+						"default": true,
+						"description": "Enable keyboard shortcuts synchronization."
+					},
+					"gitopssettings.synchronize.userSnippets": {
+						"type": "boolean",
+						"default": true,
+						"description": "Enable user snippets synchronization."
+					},
+					"gitopssettings.synchronize.userTasks": {
+						"type": "boolean",
+						"default": true,
+						"description": "Enable user tasks synchronization."
+					},
+					"gitopssettings.synchronize.extensions": {
+						"type": "boolean",
+						"default": true,
+						"description": "Enable extensions synchronization."
+					}
+				}
+			}
+		],
 		"commands": [
 			{
-				"command": "gitopssettings.helloWorld",
-				"title": "Hello World"
+				"command": "gitopssettings.importDataWithoutPull",
+				"category": "GitOpsSettings",
+				"title": "Import configuration without performing pull operation"
+			},
+			{
+				"command": "gitopssettings.importData",
+				"category": "GitOpsSettings",
+				"title": "Import configuration"
+			},
+			{
+				"command": "gitopssettings.checkForUpdates",
+				"category": "GitOpsSettings",
+				"title": "Check for available updates"
+			},
+			{
+				"command": "gitopssettings.exportCurrentData",
+				"category": "GitOpsSettings",
+				"title": "Export current configuration"
+			},
+			{
+				"command": "gitopssettings.setStorageDirectory",
+				"category": "GitOpsSettings",
+				"title": "Set storage directory"
+			},
+			{
+				"command": "gitopssettings.openStorageDirectory",
+				"category": "GitOpsSettings",
+				"title": "Open storage directory"
 			}
 		]
 	},
@@ -33,19 +118,25 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.65.0",
+		"@types/fs-extra": "^9.0.13",
 		"@types/glob": "^7.2.0",
+		"@types/json-stable-stringify": "^1.0.34",
 		"@types/mocha": "^9.1.0",
 		"@types/node": "14.x",
+		"@types/vscode": "^1.65.0",
 		"@typescript-eslint/eslint-plugin": "^5.12.1",
 		"@typescript-eslint/parser": "^5.12.1",
+		"@vscode/test-electron": "^2.1.2",
 		"eslint": "^8.9.0",
 		"glob": "^7.2.0",
 		"mocha": "^9.2.1",
-		"typescript": "^4.5.5",
 		"ts-loader": "^9.2.6",
+		"typescript": "^4.5.5",
 		"webpack": "^5.69.1",
-		"webpack-cli": "^4.9.2",
-		"@vscode/test-electron": "^2.1.2"
+		"webpack-cli": "^4.9.2"
+	},
+	"dependencies": {
+		"fs-extra": "^10.0.1",
+		"json-stable-stringify": "^1.0.1"
 	}
 }
